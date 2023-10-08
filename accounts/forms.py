@@ -7,7 +7,7 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ( 
             "email",
             "username"
-        )
+        )  
 
 
 class CustomUserChangeForm(UserChangeForm):
