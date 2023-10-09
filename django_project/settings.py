@@ -16,16 +16,16 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+# environ  
+import pathlib 
+from environ import Env
+env = Env()
+env.read_env()
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+DEBUG = env.bool('DJANGO_DEBUG')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d^@i!=qfuqglqhy8)+ge%&g)aa^4p#11w*age=%*(_&^30-2v@'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -87,14 +87,7 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-"default": {
-"ENGINE": "django.db.backends.postgresql",
-"NAME": "postgres",
-"USER": "postgres",
-"PASSWORD": "postgres",
-"HOST": "db",
-"PORT": 5432,
-}
+    "default": env.db_url("DATABASE_URL", default="postgres://postgres@db/postgres")
 }
 
 
@@ -153,7 +146,7 @@ ACCOUNT_LOGOUT_REDIRECT = "home"
 ACCOUNT_SESSION_REMEMBER = True 
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_REQUIRED = False # new
-ACCOUNT_AUTHENTICATION_METHOD = "email" # new
+ACCOUNT_AUTHENTICATION_METHOD = "username_email" # new
 ACCOUNT_EMAIL_REQUIRED = True # new
 ACCOUNT_UNIQUE_EMAIL = True # new
 AUTHENTICATION_BACKENDS = (
@@ -161,3 +154,8 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend", # new
 )
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+
+
+
