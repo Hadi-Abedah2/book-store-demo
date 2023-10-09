@@ -6,7 +6,7 @@ from .forms import CustomUserCreationForm
 
 
 
-class SignupPageView(generic.CreateView):
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
+#class SignupPageView(generic.CreateView):
+#    form_class = CustomUserCreationForm
+#    success_url = reverse_lazy('login')               ....... no need after allauth ........
+#    template_name = 'registration/signup.html'
