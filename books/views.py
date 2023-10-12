@@ -1,5 +1,6 @@
 from typing import Any
 from django.forms.models import BaseModelForm
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render
@@ -9,14 +10,16 @@ from .forms import ReviewForm
 # Create your views here.
 
 
-class BookListView(generic.ListView):
+class BookListView(LoginRequiredMixin, generic.ListView):
     model = Book
     template_name = 'books/book_list.html'   # I can omit this since it follows the naming convention.
 
 
 
-class BookDetailView(generic.DetailView):
+class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = Book 
+    permission_required = "books.special_status"
+    
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         book = Book.objects.get(pk=self.kwargs.get('pk'))
         reviews = book.reviews.all()
@@ -26,7 +29,7 @@ class BookDetailView(generic.DetailView):
     
 
 
-class ReviewCreateView(generic.CreateView):
+class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
     model = Review
     form_class  = ReviewForm 
     #success_url = reverse_lazy('book_list')
