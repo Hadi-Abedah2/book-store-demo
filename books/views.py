@@ -1,5 +1,6 @@
 from typing import Any
-from django.forms.models import BaseModelForm
+from django.db.models.query import QuerySet
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy, reverse
@@ -13,13 +14,21 @@ from .forms import ReviewForm
 class BookListView(LoginRequiredMixin, generic.ListView):
     model = Book
     template_name = 'books/book_list.html'   # I can omit this since it follows the naming convention.
+    paginate_by = 10
 
+    def get_queryset(self) -> QuerySet[Any]:
+        search = self.request.GET.get('s')
+        if search:
+            query_set = Book.objects.filter(Q(title__icontains=search) | Q(author__icontains=search))
+            return query_set
 
+        else : 
+            return super().get_queryset()
 
 class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = Book 
     permission_required = "books.special_status"
-    
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         book = Book.objects.get(pk=self.kwargs.get('pk'))
         reviews = book.reviews.all()
