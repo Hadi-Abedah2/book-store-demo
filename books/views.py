@@ -1,4 +1,5 @@
 from typing import Any
+from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -25,15 +26,18 @@ class BookListView(LoginRequiredMixin, generic.ListView):
         else : 
             return super().get_queryset()
 
-class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
+class BookDetailView(LoginRequiredMixin, generic.DetailView):
     model = Book 
-    permission_required = "books.special_status"
+    #permission_required = "books.special_status"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        query_set = Book.objects.all().prefetch_related('reviews__author',) 
+        return query_set
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        book = Book.objects.get(pk=self.kwargs.get('pk'))
-        reviews = book.reviews.all()
+        context = super().get_context_data()
         review_form = ReviewForm()
-        context = {'book':book, 'reviews':reviews, 'review_form':review_form}
+        context['review_form'] = review_form
         return context 
     
 
