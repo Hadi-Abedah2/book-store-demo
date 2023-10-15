@@ -11,7 +11,13 @@ services:
       - db
     environment:
       - DJANGO_SECRET_KEY=django-insecure-d^@i!=qfuqglqhy8)+ge%&g)aa^4p#11w*age=%*(_&^30-2v@
-      - "DJANGO_DEBUG=TRUE"
+      - "DJANGO_DEBUG=False"
+      - "DJANGO_SECURE_SSL_REDIRECT=False"
+      - "DJANGO_SECURE_HSTS_SECONDS=0" # new
+      - "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS=False" # new
+      - "DJANGO_SECURE_HSTS_PRELOAD=False"
+      - "DJANGO_SESSION_COOKIE_SECURE=False" # new
+      - "DJANGO_CSRF_COOKIE_SECURE=False" # new
 
   db:
     image: postgres:16  # Update to PostgreSQL 16

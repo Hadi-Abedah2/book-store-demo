@@ -21,7 +21,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     # admin panel
-    path('admin/', admin.site.urls),
     # user management 
     path('accounts/', include('allauth.urls')),
     # loacl apps
@@ -35,4 +34,10 @@ if settings.DEBUG :
     import debug_toolbar
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
+        path('admin/', admin.site.urls),
+    ]
+
+elif not settings.DEBUG :
+    urlpatterns += [ 
+        path("custom-admin/", admin.site.urls),
     ]
